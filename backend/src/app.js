@@ -4,7 +4,10 @@ const cors = require("cors");
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "*", // for now (later restrict to your Vercel URL)
+  credentials: true
+}));
 app.use(express.json());
 
 

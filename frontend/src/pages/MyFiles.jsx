@@ -9,6 +9,8 @@ const MyFiles = () => {
   const [files, setFiles] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
 
   const clearSelection = () => setSelectedFile(null);
 
@@ -18,11 +20,14 @@ const MyFiles = () => {
 
   const fetchFiles = async () => {
     try {
+      setLoading(true);
       const res = await api.get("/files/recent");
       setFiles(res.data);
     } catch (err) {
       console.error(err);
-    }
+    }finally {
+    setLoading(false);
+  }
   };
 
   const toggleFavorite = async (id) => {
@@ -47,6 +52,29 @@ const MyFiles = () => {
 
     return "📁";
   };
+
+
+  if (loading) {
+    return (
+      <div className="grid mt-18 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div
+            key={i}
+            className="animate-pulse bg-[#1f2937] p-4 rounded-lg shadow"
+          >
+            {/* File icon placeholder */}
+            <div className="bg-gray-700 h-32 rounded mb-4"></div>
+
+            {/* File name */}
+            <div className="bg-gray-700 h-4 rounded w-3/4 mb-2"></div>
+
+            {/* File size / date */}
+            <div className="bg-gray-700 h-3 rounded w-1/2"></div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
 const handleDelete = async (id) => {
   try {

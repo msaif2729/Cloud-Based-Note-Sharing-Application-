@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Trash = () => {
   const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchTrash();
@@ -12,11 +13,14 @@ const Trash = () => {
 
   const fetchTrash = async () => {
     try {
+      setLoading(true);
       const res = await api.get("/files/trash");
       setFiles(res.data);
     } catch (err) {
       console.error(err);
-    }
+    }finally {
+    setLoading(false);
+  }
   };
 
   const restoreFile = async (id) => {
@@ -64,6 +68,28 @@ const Trash = () => {
 
     return daysLeft > 0 ? daysLeft : 0;
   };
+
+  if (loading) {
+  return (
+    <div className="grid mt-12 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <div
+          key={i}
+          className="animate-pulse bg-[#1f2937] p-4 rounded-lg shadow"
+        >
+          {/* File icon placeholder */}
+          <div className="bg-gray-700 h-32 rounded mb-4"></div>
+
+          {/* File name */}
+          <div className="bg-gray-700 h-4 rounded w-3/4 mb-2"></div>
+
+          {/* File size / date */}
+          <div className="bg-gray-700 h-3 rounded w-1/2"></div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
   return (
     <div className="text-white">

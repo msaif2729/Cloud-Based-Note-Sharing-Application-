@@ -5,14 +5,17 @@ import FileLogs from "./FileLogs";
 const SharedFiles = () => {
   const [files, setFiles] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchFiles();
   }, []);
 
   const fetchFiles = async () => {
+    setLoading(true);
     const res = await api.get("/groups/all-files");
     setFiles(res.data);
+    setLoading(false);
   };
 
   const getFileIcon = (type) => {
@@ -20,6 +23,28 @@ const SharedFiles = () => {
     if (type.includes("image")) return "🖼️";
     return "📁";
   };
+
+  if (loading) {
+    return (
+      <div className="grid mt-14 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div
+            key={i}
+            className="animate-pulse bg-[#1f2937] p-4 rounded-lg shadow"
+          >
+            {/* File icon placeholder */}
+            <div className="bg-gray-700 h-32 rounded mb-4"></div>
+
+            {/* File name */}
+            <div className="bg-gray-700 h-4 rounded w-3/4 mb-2"></div>
+
+            {/* File size / date */}
+            <div className="bg-gray-700 h-3 rounded w-1/2"></div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="flex gap-6 text-white">
